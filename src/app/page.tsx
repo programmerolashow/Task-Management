@@ -281,7 +281,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">
-                TaskManager
+                Task Manager
               </h1>
             </div>
           </div>
