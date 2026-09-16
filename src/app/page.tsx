@@ -44,8 +44,31 @@ export default function DashboardPage() {
     }, 4000);
   };
 
+  // Load cached tasks from localStorage on initial mount for zero-flicker refresh
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem("tm_tasks_cache");
+      const cachedStats = localStorage.getItem("tm_stats_cache");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTasks(parsed);
+          setIsLoading(false);
+        }
+      }
+      if (cachedStats) {
+        setStats(JSON.parse(cachedStats));
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }, []);
+
   const fetchTasks = useCallback(async () => {
-    setIsLoading(true);
+    // Only show full-screen spinner if we don't have any cached tasks displayed
+    if (tasks.length === 0) {
+      setIsLoading(true);
+    }
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -53,7 +76,7 @@ export default function DashboardPage() {
       const params = new URLSearchParams();
       if (statusFilter !== "ALL") {
         if (statusFilter === "OVERDUE") {
-          // Will filter overdue on frontend or handle via status
+          // Will filter overdue on frontend
         } else {
           params.append("status", statusFilter);
         }
@@ -80,8 +103,14 @@ export default function DashboardPage() {
           );
         }
         setTasks(fetchedTasks);
-        if (data.stats) {
-          setStats(data.stats);
+        try {
+          localStorage.setItem("tm_tasks_cache", JSON.stringify(fetchedTasks));
+          if (data.stats) {
+            setStats(data.stats);
+            localStorage.setItem("tm_stats_cache", JSON.stringify(data.stats));
+          }
+        } catch {
+          // Ignore storage quota errors
         }
       } else {
         showToast("error", data.error || "Failed to load tasks");
@@ -95,7 +124,7 @@ export default function DashboardPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [statusFilter, searchQuery, sortBy, sortOrder]);
+  }, [statusFilter, searchQuery, sortBy, sortOrder, tasks.length]);
 
   useEffect(() => {
     fetchTasks();
