@@ -32,19 +32,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <select
               value={task.status}
               onChange={(e) => onStatusChange(task.id, e.target.value as TaskStatus)}
-              className={`px-3 py-1 text-xs font-bold rounded-full border cursor-pointer appearance-none pr-7 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 shadow-xs transition-colors ${statusInfo.badgeColor}`}
+              className={`px-3 py-1 text-xs font-extrabold rounded-full border cursor-pointer appearance-none pr-7 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 shadow-xs transition-colors !text-blue-950 ${statusInfo.badgeColor}`}
             >
-              <option value="TODO" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold">
+              <option value="TODO" className="bg-white text-blue-950 font-bold">
                 To Do
               </option>
-              <option value="IN_PROGRESS" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold">
+              <option value="IN_PROGRESS" className="bg-white text-amber-950 font-bold">
                 In Progress
               </option>
-              <option value="COMPLETED" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold">
+              <option value="COMPLETED" className="bg-white text-emerald-950 font-bold">
                 Completed
               </option>
             </select>
-            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold opacity-75">
+            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-extrabold text-blue-950">
               ▼
             </span>
           </div>
