@@ -47,6 +47,9 @@ export default function DashboardPage() {
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+
       const params = new URLSearchParams();
       if (statusFilter !== "ALL") {
         if (statusFilter === "OVERDUE") {
@@ -61,7 +64,11 @@ export default function DashboardPage() {
       params.append("sortBy", sortBy);
       params.append("sortOrder", sortOrder);
 
-      const res = await fetch(`/api/tasks?${params.toString()}`);
+      const res = await fetch(`/api/tasks?${params.toString()}`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
       const data = await res.json();
 
       if (data.success) {
@@ -79,8 +86,12 @@ export default function DashboardPage() {
       } else {
         showToast("error", data.error || "Failed to load tasks");
       }
-    } catch {
-      showToast("error", "Network error when loading tasks");
+    } catch (err: any) {
+      if (err?.name === "AbortError") {
+        showToast("error", "Task fetch timed out after 3 seconds");
+      } else {
+        showToast("error", "Network error when loading tasks");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -312,7 +323,7 @@ export default function DashboardPage() {
               <CheckSquare className="w-8 h-8" />
             </div>
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100 mb-1">
-              No tasks found
+              No Task Found
             </h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mb-6">
               {searchQuery
