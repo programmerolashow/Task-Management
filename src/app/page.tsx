@@ -97,16 +97,32 @@ export default function DashboardPage() {
     dueDate: string;
   }): Promise<boolean> => {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+
       const res = await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
+
       const data = await res.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
+        // Optimistically prepend created task to list immediately
+        setTasks((prev) => [data.data, ...prev]);
+        setStats((prev) => ({
+          ...prev,
+          total: prev.total + 1,
+          todo: formData.status === "TODO" ? prev.todo + 1 : prev.todo,
+          inProgress: formData.status === "IN_PROGRESS" ? prev.inProgress + 1 : prev.inProgress,
+          completed: formData.status === "COMPLETED" ? prev.completed + 1 : prev.completed,
+        }));
         showToast("success", "Task created successfully!");
-        fetchTasks();
+        // Re-sync with backend asynchronously
+        setTimeout(() => fetchTasks(), 0);
         return true;
       } else {
         const errMessage = data.details
@@ -115,8 +131,12 @@ export default function DashboardPage() {
         showToast("error", errMessage);
         return false;
       }
-    } catch {
-      showToast("error", "Failed to create task due to a server error");
+    } catch (err: any) {
+      if (err?.name === "AbortError") {
+        showToast("error", "Request timed out after 3 seconds");
+      } else {
+        showToast("error", "Failed to create task due to a server error");
+      }
       return false;
     }
   };
@@ -130,17 +150,26 @@ export default function DashboardPage() {
     if (!editingTask) return false;
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+
       const res = await fetch(`/api/tasks/${editingTask.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
+
       const data = await res.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
+        setTasks((prev) =>
+          prev.map((t) => (t.id === editingTask.id ? data.data : t))
+        );
         showToast("success", "Task updated successfully!");
-        fetchTasks();
         setEditingTask(null);
+        setTimeout(() => fetchTasks(), 0);
         return true;
       } else {
         const errMessage = data.details
@@ -149,8 +178,12 @@ export default function DashboardPage() {
         showToast("error", errMessage);
         return false;
       }
-    } catch {
-      showToast("error", "Failed to update task due to a server error");
+    } catch (err: any) {
+      if (err?.name === "AbortError") {
+        showToast("error", "Request timed out after 3 seconds");
+      } else {
+        showToast("error", "Failed to update task due to a server error");
+      }
       return false;
     }
   };
