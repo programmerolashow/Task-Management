@@ -32,13 +32,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <select
               value={task.status}
               onChange={(e) => onStatusChange(task.id, e.target.value as TaskStatus)}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-full border cursor-pointer appearance-none pr-6 focus:outline-hidden ${statusInfo.badgeColor}`}
+              className={`px-3 py-1 text-xs font-bold rounded-full border cursor-pointer appearance-none pr-7 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 shadow-xs transition-colors ${statusInfo.badgeColor}`}
             >
-              <option value="TODO">To Do</option>
-              <option value="IN_PROGRESS">In Progress</option>
-              <option value="COMPLETED">Completed</option>
+              <option value="TODO" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold">
+                To Do
+              </option>
+              <option value="IN_PROGRESS" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold">
+                In Progress
+              </option>
+              <option value="COMPLETED" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold">
+                Completed
+              </option>
             </select>
-            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs opacity-60">
+            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold opacity-75">
               ▼
             </span>
           </div>

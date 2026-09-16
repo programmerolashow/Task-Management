@@ -53,26 +53,26 @@ export function getStatusInfo(status: TaskStatus) {
     case "TODO":
       return {
         label: "To Do",
-        badgeColor: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800",
+        badgeColor: "bg-blue-100 text-blue-900 border-blue-300 dark:bg-blue-950 dark:text-blue-200 dark:border-blue-700",
         dotColor: "bg-blue-500",
       };
     case "IN_PROGRESS":
       return {
         label: "In Progress",
-        badgeColor: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800",
+        badgeColor: "bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-700",
         dotColor: "bg-amber-500",
       };
     case "COMPLETED":
       return {
         label: "Completed",
-        badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800",
+        badgeColor: "bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-700",
         dotColor: "bg-emerald-500",
       };
     default:
       return {
         label: status,
-        badgeColor: "bg-gray-50 text-gray-700 border-gray-200",
-        dotColor: "bg-gray-500",
+        badgeColor: "bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700",
+        dotColor: "bg-slate-500",
       };
   }
 }
