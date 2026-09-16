@@ -283,9 +283,6 @@ export default function DashboardPage() {
               <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">
                 TaskManager
               </h1>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                TypeScript & Prisma App
-              </p>
             </div>
           </div>
 
