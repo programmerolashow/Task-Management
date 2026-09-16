@@ -10,13 +10,15 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL;
-
-  if (connectionString && connectionString.includes("neon.tech")) {
-    const pool = new Pool({ connectionString });
-    const adapter = new PrismaNeon(pool as any);
-    return new PrismaClient({ adapter });
+  if (connectionString) {
+    return new PrismaClient({
+      datasources: {
+        db: {
+          url: connectionString,
+        },
+      },
+    });
   }
-
   return new PrismaClient();
 }
 
